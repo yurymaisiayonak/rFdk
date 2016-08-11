@@ -1,0 +1,18 @@
+ install.packages("plotly")
+ library(plotly) 
+ startTime <- as.POSIXct(0, origin=ISOdatetime(2016,06,01,12,00,00))  
+  endTime <- as.POSIXct(0, origin=ISOdatetime(2016,06,01,12,59,59))
+  
+symbol <- "EURUSD"
+GetPrecision <- function (symbol) 
+   { 
+      ttConf.Symbol()[name==symbol, precision] 
+   } 
+coeff <- 10^GetPrecision(symbol)
+
+#get Ticks 
+table <- ttFeed.TickBestHistory(symbol, startTime, endTime)
+#calculating spread
+spread <- table[,.(diff=(ask-bid)*coeff), by=createTime]
+
+plot_ly(spread, x=createTime, y=diff)

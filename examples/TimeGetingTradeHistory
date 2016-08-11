@@ -1,0 +1,70 @@
+---
+title: <b> "Trades performance analysis" </b>
+author: "Igor Galankov"
+date: '`r Sys.time()`'
+output: html_document
+params:
+  symbol: EURUSD
+--- 
+
+```{r setup, cache = F, echo = F, message = F, warning = F, tidy = F, results='hide'} 
+require(rFdk)
+ttConnect()
+if(!require("tibble")){
+install.packages("tibble", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
+library(tibble)
+}
+if(!require("plotly")){
+install.packages("plotly", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
+library(plotly)
+}
+if(!require("DT")){
+install.packages("DT", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
+library(DT)
+}
+
+utits = "secs"
+tz = "UTC"
+server <- "tp.st.soft-fx.eu"
+login <- "1"
+password <- "123qwe!"
+symbol <- "EURUSD"
+
+require(rFdk)
+ttConnect(server, login , password)
+
+
+```
+
+Server: `r  server ` <br>
+Login:  `r  login ` <br>
+<br>
+
+```{r results= 'markup'}
+
+start.time <- Sys.time()
+
+history <- ttTrade.History()
+
+end.time <- Sys.time()
+
+time_taken <- difftime(end.time, start.time, tz, utits)
+tt <- round(as.numeric(time_taken), 2)
+
+
+countRecords =  nrow(history)
+speed = signif(round(countRecords/tt,0),3)
+
+table<- data.table(names=c("records"), "Count"=c(countRecords), "Loading time , sec"= c(tt), "Speed getting records, per sec"= c(speed))
+
+
+datatable(table, options = list(dom = 't'))
+
+```
+<br>
+<br>
+
+### Diagnostic
+
+`r history`
+

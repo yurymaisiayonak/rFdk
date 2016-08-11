@@ -1,0 +1,12 @@
+install.packages("plotly") 
+library(plotly) 
+startTime <- as.POSIXct(0, origin=ISOdatetime(2016,06,01,12,00,00))  
+endTime <- as.POSIXct(0, origin=ISOdatetime(2016,06,01,12,59,59)) 
+#get Bars 
+  table <- ttFeed.BarHistory("EURUSD", "BidAsk", "M1", startTime, endTime) 
+ 
+#Chart Volume bid
+ plot_ly(table, x=bidFrom, y=bidVolume)
+ 
+ #Chart Volume ask
+ plot_ly(table, x=askFrom, y=askVolume)

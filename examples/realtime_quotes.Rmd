@@ -1,0 +1,52 @@
+---
+title: "Trades rFdk"
+output:
+  html_document:
+    theme: united
+    toc: yes
+---
+
+Sections:
+#1. Connection
+#2. Request a monitoring ID
+#3. Monitoring using the ID
+#4. Unsubscribe
+
+
+
+#1. Connection
+
+Connect to TT Live server:
+ttConnect()
+
+```{r}
+options(warn=-1)
+require(rFdk)
+ttConnect()
+```
+
+#2. Request a monitoring ID
+
+```{r}
+sym = ttFeed.Subscribe("EURUSD", 2)
+```
+
+#3. Monitoring using the ID
+
+```{r}
+ttFeed.GetLevel2(sym)
+Sys.sleep(3)
+
+ttFeed.GetLevel2(sym)
+Sys.sleep(3)
+
+ttFeed.GetLevel2(sym)
+```
+
+#4. Unsubscribe
+
+```{r}
+# Commented as it takes to long
+ttFeed.Unsubscribe(sym)
+
+```

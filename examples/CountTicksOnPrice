@@ -1,0 +1,28 @@
+install.packages("plotly") 
+library(plotly) 
+
+startTime <- as.POSIXct(0, origin=ISOdatetime(2016,06,01,12,00,00))    
+endTime <- as.POSIXct(0, origin=ISOdatetime(2016,06,01,12,03,00))   
+
+symbol <- "BTCUSD"
+
+#get ticks  
+table <- ttFeed.TickBestHistory(symbol, startTime, endTime)   
+
+GetPrecision <- function (symbol)
+    {
+       ttConf.Symbol()[name==symbol, precision]
+    }
+coeff <- 10^GetPrecision(symbol)
+
+#calculate count Asks  
+countAsk <- table(table$ask*coeff)  
+  
+#calculate count Bids  
+countBid <- table(table$bid*coeff)  
+
+#chart by Asks  
+barplot(countAsk, horiz=TRUE)  
+   
+#Chart by Bids   
+#barplot(countBid, horiz=TRUE)  

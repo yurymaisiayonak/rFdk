@@ -1,0 +1,167 @@
+---
+title: <b> "Spread analizotor" </b>
+author: "Igor Galankov"
+date: '`r Sys.time()`'
+output: html_document
+params:
+  symbol: EURUSD
+--- 
+
+```{r setup, cache = F, echo = F, message = F, warning = F, tidy = F, results='hide'} 
+require(rFdk)
+ttConnect()
+if(!require("tibble")){
+install.packages("tibble", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
+library(tibble)
+}
+if(!require("plotly")){
+install.packages("plotly", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
+library(plotly)
+}
+if(!require("DT")){
+install.packages("DT", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
+library(DT)
+}
+if(!require("lubridate")){
+install.packages("lubridate", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
+library(lubridate)
+}
+
+if(!require("stats")){
+install.packages("stats", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
+library(stats)
+}
+
+```
+
+
+```{r echo=F, results='hide'}
+#ttConnect("tp.st.soft-fx.eu","100248","123qwe!")
+ttConnect()
+#resultSS <- data.frame(SpreadMean = character(), from = character(), to = character(), p_value = character())
+spreadAll <- data.frame()
+
+chartTable <- data.frame()
+
+totalSpreadAll <- data.frame()
+
+spreadHour <-data.frame()
+
+interval <-data.frame()
+
+resultSSAll <-data.frame()
+
+countDays = 870
+
+symbol <-  c("XAUUSD", "XAGUSD", "EURUSD", "BTCUSD", "LTCUSD", "USDSEK", "USDCHF", "USDJPY", "GBPNZD", "CADJPY", "AUDCHF")
+#symbol <-  c("XAUUSD")
+for (symbol in symbol)
+{
+st <- as.POSIXct(0, origin=ISOdatetime(2014,01,01,3,00,00))   
+et = as.POSIXct(0, origin=ISOdatetime(2014,01,01,4,00,00))  
+
+st2 <- st+hours(24)
+
+ while (st2>st) {
+
+ GetPrecision <- function (symbol)  
+    {  
+       ttConf.Symbol()[name==symbol, precision]  
+    }  
+ coeff <- 10^GetPrecision(symbol) 
+
+#    ticksAll <-ttFeed.TickBestHistory(symbol, st,et)
+#   spreadAll = (ticksAll$ask - ticksAll$bid)*coeff
+#   spreadAllDiff = round(mean(spreadAll),5)
+
+
+
+st1 <- st+days(countDays)
+spreadAll <- data.frame()
+   while (st1>st) {
+
+    spreadHour <- data.frame()
+      
+    bars <-ttFeed.BarHistory(symbol, "BidAsk", "M1", st, et)
+    
+    spreadHour <- rbind(spreadHour, data.frame(spread=(bars$askOpen - bars$bidOpen)*coeff))
+    spreadHour <- rbind(spreadHour, data.frame(spread=(bars$askClose - bars$bidClose)*coeff))
+    spreadAll <- rbind(spreadAll, data.frame(symbol=symbol, dateFrom=st, meanSpread=mean(spreadHour$spread)))
+     
+    
+
+        st = st+days(1)
+        et = et+days(1)
+
+   }
+spreadAll <- as.data.table(spreadAll[complete.cases(spreadAll),])
+
+resultSS<-spreadAll[meanSpread > mean(spreadAll$meanSpread) + 3*sd(spreadAll$meanSpread) | meanSpread < mean(spreadAll$meanSpread) - 3*sd(spreadAll$meanSpread),]
+
+resultSSAll_1 <- rbind(resultSSAll, data.frame(resultSS))
+
+resultSSAll <- data.table(resultSSAll_1)
+
+interval <-rbind(interval, data.table(symbol=symbol, dateFrom=st-days(countDays), intervalFrom=mean(spreadAll$meanSpread) - 3*sd(spreadAll$meanSpread), intervalTo = mean(spreadAll$meanSpread) + 3*sd(spreadAll$meanSpread)))
+
+
+totalSpreadAll <- rbind (totalSpreadAll, spreadAll)
+
+        st = st1 - days(countDays)
+        et = et - days(countDays)
+
+        st = st+hours(1)
+        et = et+hours(1)
+        
+ }
+
+}
+
+```
+<br>
+<h1>
+Suspicious spread:
+</h1>
+```{r echo=F}
+
+#mergeTable <- merge.data.frame(resultSSAll, interval, by=dateFrom)
+#datatable(mergeTable)
+
+
+chartTable<-resultSSAll[,.(count=.N), by=.(dateFrom,symbol)][order(-count)]
+#chartTable[,"sigma"] <- resultSSAll$meanSpread/ (3*sd(spreadAll$meanSpread))
+colnames(chartTable) <- c("date","symbol","count")
+
+
+plot_ly(chartTable, x=date-hours(3), y = symbol,  type = "histogram2d")
+
+#plot_ly(chartTable, x=date-hours(3), y = symbol, z=sigma*3*sd(spreadAll$meanSpread), type = "scatter3d")
+#plot_ly(chartTable, colors = c("#ffffff", "#000000"), type = "histogram2d")
+datatable(resultSSAll)
+
+```
+<br>
+<br>
+
+<h2>
+Intervals:
+</h2>
+```{r echo=F}
+#datatable(periodTable)
+datatable(interval)
+
+```
+<br>
+<br>
+
+<h2>
+ Spred by All symbols 
+</h2>
+<br>
+```{r echo=F}
+
+
+datatable(totalSpreadAll)
+```
+
+

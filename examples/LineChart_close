@@ -1,0 +1,14 @@
+ttConnect()
+install.packages("plotly") 
+library(plotly)
+startTime <- as.POSIXct(0, origin=ISOdatetime(2016,05,01,0,00,00))
+endTime <- as.POSIXct(0, origin=ISOdatetime(2016,06,01,0,00,00))
+
+#Get bars from M1
+M1 <- ttFeed.BarHistory("EURUSD", "BidAsk", "M1", startTime, endTime)
+
+#Line Chart by close prices from Bid
+plot_ly(M1, x=bidTo, y=bidClose )
+
+#Line Chart by close prices from Ask
+plot_ly(M1, x=askTo, y=askClose )

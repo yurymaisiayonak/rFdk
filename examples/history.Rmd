@@ -1,0 +1,57 @@
+---
+title: "History rFdk"
+output:
+  html_document:
+    theme: united
+    toc: yes
+---
+
+Sections:
+
+* 1. Connection
+
+* 2. Feed history  (bars and quotes)
+
+
+
+#1. Connection
+Connect to TT Demo server:
+ttConnect()
+
+```{r}
+options(warn=-1)
+require(rClr)
+require(rFdk)
+
+ttConnect("", "", "")
+
+```
+
+#2. Feed history  (bars and quotes)
+
+<p>Get 10000 bar quotes  of EURUSD symbol: </p>
+bars = ttFeed.BarHistory("EURUSD")
+
+```{r}
+ttFeed.BarHistory("EURUSD")
+```
+
+
+Get quotes
+```{r}
+
+now <-as.POSIXct(Sys.time(), tz="GMT")
+# 300 seconds from present
+prevNow <-as.POSIXct(now-(300), tz="GMT")
+
+ttFeed.TickBestHistory("EURUSD", startTime = prevNow, endTime=now)
+```
+
+Get quotes L2
+```{r}
+now <-as.POSIXct(Sys.time(), tz="GMT")
+# 1000 seconds from present
+prevNow <-as.POSIXct(now-(1000), tz="GMT")
+
+ttFeed.TickLevel2History('EURUSD', prevNow, now, depth=1)
+```

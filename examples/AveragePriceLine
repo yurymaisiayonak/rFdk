@@ -1,0 +1,17 @@
+install.packages("plotly")
+library(plotly)
+startTime <- as.POSIXct(0, origin=ISOdatetime(2016,06,01,12,00,00)) 
+endTime <- as.POSIXct(0, origin=ISOdatetime(2016,06,01,12,59,59)) 
+#get Bars
+
+table <- ttFeed.BarHistory("EURUSD", "BidAsk", "M1", startTime, endTime)
+
+#calculate mean price by Bar Bid
+meanLineBid <- table[,.(meanPrice= (bidHigh+bidLow+bidOpen+bidClose)/4), by=bidFrom]
+
+plot_ly(meanLineBid, x=bidFrom, y=meanPrice)
+
+#calculate mean price by Bar Ask
+meanLineAsk <- table[,.(meanPrice= (askHigh+askLow+askOpen+askClose)/4), by=askFrom]
+
+plot_ly(meanLineAsk, x=askFrom, y=meanPrice)

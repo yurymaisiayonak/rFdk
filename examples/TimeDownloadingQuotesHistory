@@ -1,0 +1,234 @@
+---
+title: <b> "Quotes performance analysis" </b>
+author: "Igor Galankov"
+date: '`r Sys.time()`'
+output: html_document
+params:
+  symbol: EURUSD
+--- 
+
+```{r setup, cache = F, echo = F, message = F, warning = F, tidy = F, results='hide'} 
+require(rFdk)
+ttConnect()
+if(!require("tibble")){
+install.packages("tibble", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
+library(tibble)
+}
+if(!require("plotly")){
+install.packages("plotly", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
+library(plotly)
+}
+if(!require("DT")){
+install.packages("DT", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
+library(DT)
+}
+
+symbol <- "EURUSD"
+period = "M1"
+tz <- "UTC"
+utits = "secs"
+st <- as.POSIXct(0, origin=ISOdatetime(2016,04,01,0,0,0))
+et<- as.POSIXct(0, origin=ISOdatetime(2016,06,01,0,0,0))
+```
+
+```{r echo=F, results='hide'}
+clearStore <- function ()
+{
+unlink("c:/Users/ihar.halankou/Store/ttlive.fxopen.com", recursive=TRUE)
+}
+```
+
+```{r echo=F, results='hide'}
+clearStore()
+
+start.time = Sys.time()
+ticks <- ttFeed.TickBestHistory(symbol, st, et)
+end.time = Sys.time()
+
+time_taken <- difftime(end.time, start.time, tz, utits)
+tt <- round(as.numeric(time_taken), 2)
+
+
+countTicks =  nrow(ticks)
+speedTicks = signif(round(countTicks/tt,0),3)
+ttDisconnect()
+```
+
+
+```{r echo=F, results='hide'}
+clearStore()
+
+ttConnect()
+
+start.time2 <- Sys.time()
+
+bars <- ttFeed.BarHistory(symbol, "BidAsk", period, st, et)
+
+end.time2 <- Sys.time()
+time_taken2 <- difftime(end.time2, start.time2, tz, utits)
+tt2 <-round(as.numeric(time_taken2),2)
+
+countBars =  nrow(bars)
+speedBars = signif(round(countBars/tt2,1),3)
+
+ttDisconnect()
+```
+
+``` {r echo=F, results='hide'}
+ttConnect()
+
+ttFeed.TickBestHistory(symbol, st, et)
+
+start.time3 <- Sys.time()
+
+ticks2 <- ttFeed.TickBestHistory(symbol, st, et)
+
+end.time3 <- Sys.time()
+
+time_taken3 <- difftime(end.time3, start.time3, tz, utits)
+tt3 <- round(as.numeric(time_taken3),2)
+
+countTicks2 =  nrow(ticks2)
+speedTicks2 = signif(round(countTicks/tt3,0),3)
+
+ttDisconnect()
+```
+
+
+```{r echo=F, results='hide'}
+
+ttConnect()
+ttFeed.BarHistory(symbol, "BidAsk", period, st, et)
+
+start.time4 <- Sys.time()
+
+bars2 <- ttFeed.BarHistory(symbol, "BidAsk", period, st, et)
+
+end.time4 <- Sys.time()
+time_taken4 <- difftime(end.time4, start.time4, tz, utits)
+tt4 <- round(as.numeric(time_taken4),2)
+
+
+countBars2 =  nrow(bars2)
+speedBars2 = signif(round(countBars/tt4,1),3)
+
+ttDisconnect()
+```
+
+
+### Time and speed downloading quotes from `r st ` to `r et `
+
+```{r echo=F}
+speedtable <- data.table(names=c("ticks", "barsM1"), "Count"=c(countTicks,countBars), "Loading time from server, sec"= c(tt, tt2), "Loading time from cache, sec"=c(tt3, tt4), "Speed from server, per sec"= c(speedTicks, speedBars), "Speed from cache, per sec"= c(speedTicks2, speedBars2))
+
+
+datatable(speedtable, options = list(dom = 't'))
+  
+```
+
+<br>
+<br>
+<b>Time downloading bars from SSD Disk with different periodicity from `r st ` to `r et ` </b>
+
+```{r echo=F}
+ttConnect()
+
+result <- data.frame(periodicity = character(), time = character())
+resultSpeed <- data.frame(periodicity = character(), speedBars = character())
+
+for (period in c("S1", "S10", "M1", "M5", "M15", "M30", "H1", "H4", "D1", "W1", "MN1"))
+{
+    
+    start.time5 <- Sys.time()
+    table <- ttFeed.BarHistory("EURUSD", "BidAsk", period, st, et)
+    end.time5 <- Sys.time()
+    
+    time_taken5 <- difftime(end.time5, start.time5, tz, utits)
+    tt5 <- round(as.numeric(time_taken5), 2)
+   
+    countBars3 =  nrow(table)
+    speedBars3 = signif(round(countBars3/tt5,1),3)
+    
+    result <- rbind(result, data.frame(periodicity = period, time = tt5))
+    
+    resultSpeed <- rbind(resultSpeed , data.frame(periodicity = period, speedBars = speedBars3))
+    
+}
+
+
+plot_ly(result, x=periodicity, y=time)
+```
+<br>
+<br>
+
+<b>Speed downloading bars from SSD Disk with different periodicity from `r st ` to `r et ` </b>
+
+```{r echo=F}
+plot_ly(resultSpeed, x=periodicity, y=speedBars)
+ttDisconnect()
+```
+
+<b> Plan: </b> <br>
+ 1) Get ticks from Server <br>
+ 2) Calculate time and speed downloading <br>
+ 3) Get bars from Server <br>
+ 4) Calculate time and speed downloading <br>
+ 5) Get ticks from SSD Disk <br>
+ 6) Calculate time and speed downloading <br>
+ 7) Get bars from SSD Disk <br>
+ 8) Calculate time and speed downloading <br>
+ 9) Draw charts of the time and speed of getting ticks and bars <br>
+
+
+
+###Getting ticks from Server</b>
+
+
+```{r echo=F}
+
+ticks
+
+```
+
+Result: <br>
+ - Ticks Total time from Server: <b>`r tt `  </b> sec <br>
+ - Speed: <b> `r speedTicks  `  </b>  ticks per second <br>
+
+
+###Getting bars from Server
+
+```{r echo=F}
+
+bars
+
+```
+
+Result: <br>
+ - Bars Total time from Server: <b> `r tt2 `</b> sec <br>
+ - Speed: <b>  `r speedBars ` </b>  bars per second <br>
+
+
+###Getting ticks from Disk (SSD) 
+
+```{r echo=F}
+
+ticks2
+
+```
+
+Result: <br>
+ - Ticks Total time from Disk: <b> `r tt3 ` </b>  sec <br>
+ - Speed: <b>  `r speedTicks2 ` </b>  ticks per second <br>
+
+
+###Getting bars from Disk (SSD) 
+
+```{r echo=F}
+
+bars2
+
+```
+
+Result: <br>
+ - Bars Total time from Disk: <b> `r tt4 ` </b> sec <br>
+ - Speed: <b>  `r speedBars2 ` </b>  bars per second <br>
