@@ -18,7 +18,7 @@ namespace FdkMinimal
             }
             set
             {
-                _appDir = FdkHelper.MakeValidFileName(value);
+                _appDir = value;
             }
         }
         public static string LogDir { get { return Path.Combine(AppDir, "Logs"); } }
