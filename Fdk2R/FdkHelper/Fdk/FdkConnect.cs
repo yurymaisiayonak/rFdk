@@ -4,6 +4,7 @@ using SoftFX.Extended.Storage;
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace FdkMinimal
 {
@@ -11,7 +12,9 @@ namespace FdkMinimal
     {
         private readonly ILog _logger = LogManager.GetLogger(typeof(FdkConnection));
         private object _syncObj = new object();
-        private bool logoutHandled = false;
+        private bool _logoutHandled = false;
+        private AutoResetEvent _cacheWaiter = new AutoResetEvent(false);
+        private bool _isCacheInitialized = false;
 
         public string Address { get; set; }
         public string Username { get; set; }
@@ -79,7 +82,7 @@ namespace FdkMinimal
 
         public bool Connect(string address, string username, string password, string protocol)
         {
-            logoutHandled = false;
+            _logoutHandled = false;
             Disconnect();
 
             _logger.InfoFormat("Connecting to {0} (login: {1}, protocol: {2})", address, username, protocol);
@@ -101,24 +104,46 @@ namespace FdkMinimal
 
             FeedProxy = new DataFeed(FeedConnection.ToString());
             FeedProxy.Logout += ProxyLogout;
+            FeedProxy.CacheInitialized += FeedCacheInitialized;
             FeedStorage = new DataFeedStorage(Path.Combine(FdkEnvironment.StoreDir, FdkHelper.MakeValidFileName(address)), StorageProvider.Ntfs, FeedProxy, true);
 
             if (FeedProxy.Start(FdkHelper.ConnectionTimeout) && TradeProxy.Start(FdkHelper.ConnectionTimeout))
             {
-                IsConnected = true;
-                _logger.InfoFormat("Connected successfully", username, address);
+                _cacheWaiter.WaitOne(TimeSpan.FromSeconds(10));
+
+                lock(_syncObj)
+                {
+                    if (!_isCacheInitialized)
+                    {
+                        Disconnect();
+                        _logger.InfoFormat("Connecting failed (Reason: Cache Initialization Timeout)", username, address);
+                    }
+                    else
+                    {
+                        IsConnected = true;
+                        _logger.InfoFormat("Connected successfully", username, address);
+                    }
+                }
             }
 
             return IsConnected;
+        }
+
+        private void FeedCacheInitialized(object sender, SoftFX.Extended.Events.CacheEventArgs e)
+        {
+            lock (_syncObj)
+                _isCacheInitialized = true;
+
+            _cacheWaiter.Set();
         }
 
         private void ProxyLogout(object sender, SoftFX.Extended.Events.LogoutEventArgs e)
         {
             lock (_syncObj)
             {
-                if (!logoutHandled)
+                if (!_logoutHandled)
                 {
-                    logoutHandled = true;
+                    _logoutHandled = true;
                     IsConnected = false;
                     LastError = e.Reason;
                     if (HasError)
@@ -140,6 +165,7 @@ namespace FdkMinimal
             if (FeedProxy != null)
             {
                 FeedProxy.Logout -= ProxyLogout;
+                FeedProxy.CacheInitialized -= FeedCacheInitialized;
                 FeedProxy.Stop();
                 FeedProxy.Dispose();
                 FeedProxy = null;
@@ -152,6 +178,7 @@ namespace FdkMinimal
             }
 
             IsConnected = false;
+            _isCacheInitialized = false;
         }
 
         public void Dispose()
