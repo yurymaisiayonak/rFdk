@@ -1,6 +1,36 @@
-install.packages("plotly") 
-library(plotly) 
+---
+title: <b> "Count ticks on price" </b>
+author: "Igor Galankov"
+date: '`r Sys.time()`'
+output: html_document
 
+--- 
+
+```{r setup, cache = F, echo = F, message = F, warning = F, tidy = F, results='hide'} 
+require(rFdk)
+ttConnect()
+if(!require("tibble")){
+install.packages("tibble", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
+library(tibble)
+}
+if(!require("plotly")){
+install.packages("plotly", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
+library(plotly)
+}
+if(!require("DT")){
+install.packages("DT", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
+library(DT)
+}
+
+require(rFdk)
+ttConnect()
+
+
+```
+
+<br>
+
+```{r echo=F}
 startTime <- as.POSIXct(0, origin=ISOdatetime(2016,06,01,12,00,00))    
 endTime <- as.POSIXct(0, origin=ISOdatetime(2016,06,01,12,03,00))   
 
@@ -26,3 +56,8 @@ barplot(countAsk, horiz=TRUE)
    
 #Chart by Bids   
 #barplot(countBid, horiz=TRUE)  
+
+```
+
+Example of final report:
+http://rpubs.com/ihalankou/CountTicksOnPrice
