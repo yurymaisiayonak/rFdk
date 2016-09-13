@@ -50,3 +50,5 @@ ttFeed.GetLevel2(sym)
 ttFeed.Unsubscribe(sym)
 
 ```
+Example of final report:
+http://rpubs.com/ihalankou/RealtimeQuotes
