@@ -1,5 +1,38 @@
-install.packages("plotly") 
-library(plotly) 
+---
+title: <b> "VolumeBarChart" </b>
+author: "Igor Galankov"
+date: '`r Sys.time()`'
+output: html_document
+
+--- 
+
+```{r setup, cache = F, echo = F, message = F, warning = F, tidy = F, results='hide'} 
+require(rFdk)
+ttConnect()
+if(!require("tibble")){
+install.packages("tibble", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
+library(tibble)
+}
+if(!require("plotly")){
+install.packages("plotly", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
+library(plotly)
+}
+if(!require("DT")){
+install.packages("DT", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
+library(DT)
+}
+
+require(rFdk)
+ttConnect()
+
+
+```
+
+<br>
+Chart Volume bid
+<br>
+<br>
+```{r echo=F}
 startTime <- as.POSIXct(0, origin=ISOdatetime(2016,06,01,12,00,00))  
 endTime <- as.POSIXct(0, origin=ISOdatetime(2016,06,01,12,59,59)) 
 #get Bars 
@@ -7,6 +40,19 @@ endTime <- as.POSIXct(0, origin=ISOdatetime(2016,06,01,12,59,59))
  
 #Chart Volume bid
  plot_ly(table, x=bidFrom, y=bidVolume)
- 
- #Chart Volume ask
+```
+<br>
+<br>
+Chart Volume ask
+<br>
+<br>
+```{r echo=F}
+#Chart Volume ask
  plot_ly(table, x=askFrom, y=askVolume)
+
+```
+
+ 
+ Example of final report: 
+ http://rpubs.com/ihalankou/VolumeBarChart
+
