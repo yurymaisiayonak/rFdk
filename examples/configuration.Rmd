@@ -14,7 +14,7 @@ Sections:
 
 
 #1. Connection
-Connect to TT Demo server:
+Connect to TT server:
 ttConnect()
 
 ```{r}
@@ -23,14 +23,28 @@ require(rClr)
 require(rFdk)
 
 ttConnect("", "", "")
+if(!require("DT")){ 
+ install.packages("DT", repos = "http://cran.us.r-project.org", dependencies = TRUE)  
+ library(DT) 
+ } 
 
 ```
 
 #2. Configuration
 
-Get symbol and currency data
+Get symbol data
+<br>
 ```{r}
-ttConf.Symbol()
-
-ttConf.Currency()
+symbols <-ttConf.Symbol()
+datatable (symbols)
 ```
+<br>
+Get currency data
+<br>
+```{r}
+currency <- ttConf.Currency()
+datatable (currency)
+```
+
+Example of final report: 
+http://rpubs.com/ihalankou/SymbolsIffo
