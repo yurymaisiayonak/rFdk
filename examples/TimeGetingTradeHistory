@@ -68,3 +68,5 @@ datatable(table, options = list(dom = 't'))
 
 `r history`
 
+Example of final report :
+http://rpubs.com/ihalankou/tpa
