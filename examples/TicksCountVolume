@@ -86,6 +86,3 @@ formatCurrency(c('countTicks','sumVolumeAsk','sumVolumeBid'), '')
 #write.csv(result, file = "Count Ticks.csv")
 ``` 
 
-Example of final report:
-http://rpubs.com/ihalankou/TicksCountVolume
- 
