@@ -59,5 +59,4 @@ barplot(countAsk, horiz=TRUE)
 
 ```
 
-Example of final report:
-http://rpubs.com/ihalankou/CountTicksOnPrice
+
