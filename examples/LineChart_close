@@ -53,5 +53,3 @@ plot_ly(M1, x=askTo, y=askClose )
 
 ```
 
-Example of final report: 
-http://rpubs.com/ihalankou/LineChart_close
