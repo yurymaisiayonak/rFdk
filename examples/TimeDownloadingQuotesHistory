@@ -232,7 +232,3 @@ bars2
 Result: <br>
  - Bars Total time from Disk: <b> `r tt4 ` </b> sec <br>
  - Speed: <b>  `r speedBars2 ` </b>  bars per second <br>
-
-
-Example of final report:
-http://rpubs.com/ihalankou/qpa
