@@ -51,6 +51,3 @@ meanLineAsk <- table[,.(meanPrice= (askHigh+askLow+askOpen+askClose)/4), by=askF
 
 plot_ly(meanLineAsk, x=askFrom, y=meanPrice)
 ```
-<br>
-Example of final report: 
-http://rpubs.com/ihalankou/AveragePriceLine
