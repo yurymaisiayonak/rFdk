@@ -89,6 +89,4 @@ Period: from : `r startTime ` to `r endTime ` <br>
 datatable(result) 
 ``` 
 
-Example of final report:
-http://rpubs.com/ihalankou/BarsCountValue
- 
+
