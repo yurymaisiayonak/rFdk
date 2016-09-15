@@ -25,16 +25,18 @@ library(DT)
 require(rFdk)
 ttConnect()
 
-
+symbol <- "EURUSD"
+startTime <- as.POSIXct(0, origin=ISOdatetime(2016,06,01,12,00,00))    
+endTime <- as.POSIXct(0, origin=ISOdatetime(2016,06,01,13,00,00))  
 ```
 
 <br>
 
-```{r echo=F}
-startTime <- as.POSIXct(0, origin=ISOdatetime(2016,06,01,12,00,00))    
-endTime <- as.POSIXct(0, origin=ISOdatetime(2016,06,01,12,03,00))   
+Symbol: `r symbol ` <br>
+Period: from `r startTime ` to `r endTime ` <br>
 
-symbol <- "BTCUSD"
+Chart from Asks: <br>
+```{r echo=F}
 
 #get ticks  
 table <- ttFeed.TickBestHistory(symbol, startTime, endTime)   
@@ -52,11 +54,14 @@ countAsk <- table(table$ask*coeff)
 countBid <- table(table$bid*coeff)  
 
 #chart by Asks  
-barplot(countAsk, horiz=TRUE)  
+barplot(countAsk, horiz=TRUE, xlab="Count ticks", ylab="Ticks value")  
    
 #Chart by Bids   
 #barplot(countBid, horiz=TRUE)  
 
 ```
-
-
+<br>
+Chart from Bids: <br>
+```{r echo=F}
+barplot(countBid, horiz=TRUE, xlab="Count ticks", ylab="Ticks value") 
+```
