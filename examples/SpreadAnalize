@@ -1,5 +1,5 @@
 ---
-title: <b> "Spread analizotor" </b>
+title: <b> "Spread analizer" </b>
 author: "Igor Galankov"
 date: '`r Sys.time()`'
 output: html_document
@@ -27,9 +27,9 @@ install.packages("lubridate", repos = "http://cran.us.r-project.org", dependenci
 library(lubridate)
 }
 
-if(!require("stats")){
-install.packages("stats", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
-library(stats)
+if(!require("dplyr")){
+install.packages("dplyr", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
+library(dplyr)
 }
 
 ```
@@ -51,14 +51,17 @@ interval <-data.frame()
 
 resultSSAll <-data.frame()
 
-countDays = 870
+countDays = 90
 
-symbol <-  c("XAUUSD", "XAGUSD", "EURUSD", "BTCUSD", "LTCUSD", "USDSEK", "USDCHF", "USDJPY", "GBPNZD", "CADJPY", "AUDCHF")
+#symbol <-  c("USDSEK","AUDCHF", "XAGUSD", "GBPJPY", "AUDUSD", "GBPCHF", "USDJPY")
+#symbol <-  c("USDSEK","AUDCHF", "XAGUSD")
 #symbol <-  c("XAUUSD")
-for (symbol in symbol)
+currentSymbol <- ttConf.Symbol()$name
+
+for (symbol in currentSymbol)
 {
-st <- as.POSIXct(0, origin=ISOdatetime(2014,01,01,3,00,00))   
-et = as.POSIXct(0, origin=ISOdatetime(2014,01,01,4,00,00))  
+st <- as.POSIXct(0, origin=ISOdatetime(2016,01,01,3,00,00))   
+et = as.POSIXct(0, origin=ISOdatetime(2016,01,01,4,00,00))  
 
 st2 <- st+hours(24)
 
@@ -102,7 +105,7 @@ resultSSAll_1 <- rbind(resultSSAll, data.frame(resultSS))
 
 resultSSAll <- data.table(resultSSAll_1)
 
-interval <-rbind(interval, data.table(symbol=symbol, dateFrom=st-days(countDays), intervalFrom=mean(spreadAll$meanSpread) - 3*sd(spreadAll$meanSpread), intervalTo = mean(spreadAll$meanSpread) + 3*sd(spreadAll$meanSpread)))
+interval <-rbind(interval, data.table(symbol=symbol, dateFrom=spreadAll$dateFrom, intervalFrom=mean(spreadAll$meanSpread) - 3*sd(spreadAll$meanSpread), intervalTo = mean(spreadAll$meanSpread) + 3*sd(spreadAll$meanSpread), CountSigma=spreadAll$meanSpread/(3*sd(spreadAll$meanSpread))))
 
 
 totalSpreadAll <- rbind (totalSpreadAll, spreadAll)
@@ -116,6 +119,9 @@ totalSpreadAll <- rbind (totalSpreadAll, spreadAll)
  }
 
 }
+a <-  left_join(totalSpreadAll, interval)
+b <- left_join(resultSSAll, a)
+res <- as.data.table(b)
 
 ```
 <br>
@@ -128,40 +134,17 @@ Suspicious spread:
 #datatable(mergeTable)
 
 
-chartTable<-resultSSAll[,.(count=.N), by=.(dateFrom,symbol)][order(-count)]
+#chartTable<-resultSSAll[,.(count=.N), by=.(dateFrom,symbol)][order(-count)]
 #chartTable[,"sigma"] <- resultSSAll$meanSpread/ (3*sd(spreadAll$meanSpread))
-colnames(chartTable) <- c("date","symbol","count")
+#colnames(chartTable) <- c("date","symbol","count")
 
 
-plot_ly(chartTable, x=date-hours(3), y = symbol,  type = "histogram2d")
+ggplotly(ggplot(a, aes(dateFrom-hours(3), symbol, fill = CountSigma)) + geom_tile())
+
+#plot_ly(chartTable, x=date-hours(3), y = symbol,  type = "histogram2d")
 
 #plot_ly(chartTable, x=date-hours(3), y = symbol, z=sigma*3*sd(spreadAll$meanSpread), type = "scatter3d")
 #plot_ly(chartTable, colors = c("#ffffff", "#000000"), type = "histogram2d")
-datatable(resultSSAll)
-
+#datatable(b, options = list(order = list(list(6, 'desc')), pageLength = 100))
+datatable(res, options = list(order = list(list(6, 'desc')), pageLength = 100))
 ```
-<br>
-<br>
-
-<h2>
-Intervals:
-</h2>
-```{r echo=F}
-#datatable(periodTable)
-datatable(interval)
-
-```
-<br>
-<br>
-
-<h2>
- Spred by All symbols 
-</h2>
-<br>
-```{r echo=F}
-
-
-datatable(totalSpreadAll)
-```
-
-
