@@ -1,1 +1,0 @@
-Maps SoftFX's FDK to R package for quick access
