@@ -6,23 +6,20 @@ If you see this error: "You are probably missing the Visual C++ Redistributable 
 https://www.microsoft.com/en-us/download/details.aspx?id=40784
 
 # How to install it?
-```"data.table")) 
-  install.packages("data.table")
-library("data.table")
-if(!require("stringi"))
-  install.packag
-if(!require(es("stringi")
-library("stringi")
-installBinaryHttr <- function(fdkRLibPackage){
-  basicUrl = "https://github.com/SoftFx/FdkRLib/raw/master/dist/"
-  fullUrl = paste(basicUrl, fdkRLibPackage, sep = "")
-  download.file(fullUrl,destfile = fdkRLibPackage, method = "libcurl")
-  install.packages(fdkRLibPackage, repos = NULL, type = "source", dependencies = TRUE)
-  file.remove(fdkRLibPackage)
+```
+install.packages("install.load")
+library(install.load)
+install_load("data.table", "stringi")
+
+installRPackage <- function(url){
+	package = basename(url)
+    download.file(url, destfile = package)
+	install.packages(package, repos = NULL, type = "source")
+	file.remove(package)
 }
-if(!require("rClr")) 
-    installBinaryHttr("rClr_0.7-4.zip")
-installBinaryHttr("rFdk_1.0.20160315.zip")
+
+installRPackage("https://github.com/SoftFx/rFdk-/raw/master/Lib/RClr/rClr_0.7-4.zip");
+installRPackage("https://github.com/SoftFx/rFdk-/releases/download/v1.0.0/rFdk.zip");
 ```
 
 # How to test it?
