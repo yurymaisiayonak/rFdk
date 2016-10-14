@@ -1,6 +1,38 @@
+---
+title: <b> "Chart - Line by close prices" </b>
+author: "Igor Galankov"
+date: '`r Sys.time()`'
+output: html_document
+
+--- 
+
+```{r setup, cache = F, echo = F, message = F, warning = F, tidy = F, results='hide'} 
+require(rFdk)
 ttConnect()
-install.packages("plotly") 
+if(!require("tibble")){
+install.packages("tibble", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
+library(tibble)
+}
+if(!require("plotly")){
+install.packages("plotly", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
 library(plotly)
+}
+if(!require("DT")){
+install.packages("DT", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
+library(DT)
+}
+
+require(rFdk)
+ttConnect()
+
+
+```
+
+<br>
+Line Chart by close prices from Bid
+<br>
+<br>
+```{r echo=F}
 startTime <- as.POSIXct(0, origin=ISOdatetime(2016,05,01,0,00,00))
 endTime <- as.POSIXct(0, origin=ISOdatetime(2016,06,01,0,00,00))
 
@@ -9,6 +41,15 @@ M1 <- ttFeed.BarHistory("EURUSD", "BidAsk", "M1", startTime, endTime)
 
 #Line Chart by close prices from Bid
 plot_ly(M1, x=bidTo, y=bidClose )
-
+```
+<br>
+<br>
+Line Chart by close prices from Ask
+<br>
+<br>
+```{r echo=F}
 #Line Chart by close prices from Ask
 plot_ly(M1, x=askTo, y=askClose )
+
+```
+

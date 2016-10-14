@@ -1,0 +1,88 @@
+---
+title: <b> "Count Ticks" </b>
+author: "Igor Galankov"
+date: '`r Sys.time()`'
+output: html_document
+
+--- 
+
+```{r setup, cache = F, echo = F, message = F, warning = F, tidy = F, results='hide'} 
+require(rFdk)
+ttConnect()
+if(!require("tibble")){
+install.packages("tibble", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
+library(tibble)
+}
+if(!require("plotly")){
+install.packages("plotly", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
+library(plotly)
+}
+if(!require("DT")){
+install.packages("DT", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
+library(DT)
+}
+if(!require("lubridate")){
+install.packages("lubridate", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
+library(lubridate)
+}
+
+if(!require("stats")){
+install.packages("stats", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
+library(stats)
+}
+ttDisconnect()
+
+```
+
+
+```{r echo=F, results='hide'}
+
+server <- "tp.st.soft-fx.eu"
+
+ttConnect(server,"1","123qwe!")
+
+result <- data.frame()
+
+
+startTime <- as.POSIXct(0, origin=ISOdatetime(2016,01,01,3,00,00)) 
+endTime <- as.POSIXct(0, origin=ISOdatetime(2016,06,01,3,00,00)) 
+ 
+#for (symbol in c("EURUSD", "USDSEK", "BTCUSD", "#J225", "XAGUSD", "BTCUSD_L", "#AUS200", "NOKSEK")) 
+for (symbolCurrent in c("BTCUSD", "BTCUSD_L")) 
+{ 
+Sys.sleep(10)
+#GetPrecision <- function (symbolCurrent)  
+ #   {  
+ #      ttConf.Symbol()[name==symbolCurrent, precision]  
+ #   }  
+#  coeff <- 10^GetPrecision(symbolCurrent) 
+coeff =   ttConf.Symbol()[name==symbolCurrent, precision] 
+
+ countTicks1 = 0 
+ VolumeBid = 0
+ VolumeAsk = 0
+ 
+
+ # get L2
+ L2 <-ttFeed.TickLevel2History(symbolCurrent, startTime, endTime, 1)
+ 
+ # Calculating amount 
+  countTicks1 = nrow(L2)
+  VolumeBid =round((sum(L2$volumeBid, na.rm = TRUE)/coeff),2)
+  VolumeAsk =round((sum(L2$volumeAsk, na.rm = TRUE)/coeff),2)
+  result <- rbind(result, data.frame(symbol = symbolCurrent, countTicks= countTicks1, sumVolumeAsk = VolumeAsk, sumVolumeBid = VolumeBid))
+}
+
+```
+
+
+Server: `r server ` <br>
+Period: from : `r startTime ` to `r endTime ` <br>
+<br>
+
+```{r echo=F} 
+datatable(result) %>% 
+formatCurrency(c('countTicks','sumVolumeAsk','sumVolumeBid'), '') 
+#write.csv(result, file = "Count Ticks.csv")
+``` 
+

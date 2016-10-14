@@ -1,28 +1,57 @@
-install.packages("plotly") 
-library(plotly) 
+---
+title: <b> "AveragePriceLine" </b>
+author: "Igor Galankov"
+date: '`r Sys.time()`'
+output: html_document
 
-startTime <- as.POSIXct(0, origin=ISOdatetime(2016,06,01,12,00,00))    
-endTime <- as.POSIXct(0, origin=ISOdatetime(2016,06,01,12,03,00))   
+--- 
 
-symbol <- "BTCUSD"
+```{r setup, cache = F, echo = F, message = F, warning = F, tidy = F, results='hide'} 
+require(rFdk)
+ttConnect()
+if(!require("tibble")){
+install.packages("tibble", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
+library(tibble)
+}
+if(!require("plotly")){
+install.packages("plotly", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
+library(plotly)
+}
+if(!require("DT")){
+install.packages("DT", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
+library(DT)
+}
 
-#get ticks  
-table <- ttFeed.TickBestHistory(symbol, startTime, endTime)   
+require(rFdk)
+ttConnect()
+startTime <- as.POSIXct(0, origin=ISOdatetime(2016,06,01,12,00,00)) 
+endTime <- as.POSIXct(0, origin=ISOdatetime(2016,06,01,14,00,00)) 
+symbol <- "EURUSD"
+periodicity <- "M1"
+```
+<br>
+Symbol: `r symbol ` <br> 
+Periodicity: `r periodicity ` <br> 
+Period: from `r startTime ` to `r endTime ` <br> 
+<br>
+Bid average price line <br>
+```{r echo=F}
 
-GetPrecision <- function (symbol)
-    {
-       ttConf.Symbol()[name==symbol, precision]
-    }
-coeff <- 10^GetPrecision(symbol)
+#get Bars
 
-#calculate count Asks  
-countAsk <- table(table$ask*coeff)  
-  
-#calculate count Bids  
-countBid <- table(table$bid*coeff)  
+table <- ttFeed.BarHistory(symbol, "BidAsk", periodicity, startTime, endTime)
 
-#chart by Asks  
-barplot(countAsk, horiz=TRUE)  
-   
-#Chart by Bids   
-#barplot(countBid, horiz=TRUE)  
+#calculate mean price by Bar Bid
+meanLineBid <- table[,.(meanPrice= (bidHigh+bidLow+bidOpen+bidClose)/4), by=bidFrom]
+
+plot_ly(meanLineBid, x=bidFrom, y=meanPrice)
+```
+<br>
+<br>
+Ask average price line <br>
+```{r echo=F}
+#calculate mean price by Bar Ask
+meanLineAsk <- table[,.(meanPrice= (askHigh+askLow+askOpen+askClose)/4), by=askFrom]
+
+plot_ly(meanLineAsk, x=askFrom, y=meanPrice)
+```
