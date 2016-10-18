@@ -1,4 +1,4 @@
-ttConnect()
+ ttConnect(fdkPath = file.path(getwd(), "rfdk")))
 idMonitor <- ttFeed.Subscribe('EURUSD', 2)
 # Wait for some time before running this line
 # it can be run multiple times and the snapshot reflects
