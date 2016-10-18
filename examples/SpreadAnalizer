@@ -9,7 +9,7 @@ params:
 
 ```{r setup, cache = F, echo = F, message = F, warning = F, tidy = F, results='hide'} 
 require(rFdk)
-ttConnect()
+ttConnect(fdkPath = file.path(getwd(), "rfdk"))
 if(!require("tibble")){
 install.packages("tibble", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
 library(tibble)
@@ -37,7 +37,7 @@ library(dplyr)
 
 ```{r echo=F, results='hide'}
 #ttConnect("tp.st.soft-fx.eu","100248","123qwe!")
-ttConnect()
+ttConnect(fdkPath = file.path(getwd(), "rfdk"))
 #resultSS <- data.frame(SpreadMean = character(), from = character(), to = character(), p_value = character())
 spreadAll <- data.frame()
 
