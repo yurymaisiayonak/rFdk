@@ -22,7 +22,7 @@ ttConnect()
 ```{r}
 options(warn=-1)
 require(rFdk)
-ttConnect()
+ttConnect(fdkPath = file.path(getwd(), "rfdk"))
 ```
 
 #2. Request a monitoring ID
