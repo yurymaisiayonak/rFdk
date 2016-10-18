@@ -22,6 +22,14 @@ installRPackage("https://github.com/SoftFx/rFdk-/raw/master/Lib/RClr/rClr_0.7-4.
 installRPackage("https://github.com/SoftFx/rFdk-/releases/download/v1.0.0/rFdk.zip");
 ```
 
+# How to update it?
+1. Restart R session. Press in Console: Ctrl + Shift + F10
+2. install rFDK Package
+```
+installRPackage("https://github.com/SoftFx/rFdk-/releases/download/v1.0.0/rFdk.zip");
+require(rFdk)
+```
+
 # How to test it?
 You have sample code inside examples/sample_bars.r with various snippets of code. 
 
