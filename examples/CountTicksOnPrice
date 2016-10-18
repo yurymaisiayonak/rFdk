@@ -8,7 +8,7 @@ output: html_document
 
 ```{r setup, cache = F, echo = F, message = F, warning = F, tidy = F, results='hide'} 
 require(rFdk)
-ttConnect()
+ ttConnect(fdkPath = file.path(getwd(), "rfdk"))
 if(!require("tibble")){
 install.packages("tibble", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
 library(tibble)
@@ -23,7 +23,7 @@ library(DT)
 }
 
 require(rFdk)
-ttConnect()
+ ttConnect(fdkPath = file.path(getwd(), "rfdk"))
 startTime <- as.POSIXct(0, origin=ISOdatetime(2016,06,01,12,00,00)) 
 endTime <- as.POSIXct(0, origin=ISOdatetime(2016,06,01,14,00,00)) 
 symbol <- "EURUSD"
