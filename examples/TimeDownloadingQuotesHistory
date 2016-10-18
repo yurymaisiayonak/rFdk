@@ -9,7 +9,7 @@ params:
 
 ```{r setup, cache = F, echo = F, message = F, warning = F, tidy = F, results='hide'} 
 require(rFdk)
-ttConnect()
+ttConnect(fdkPath = file.path(getwd(), "rfdk"))
 if(!require("tibble")){
 install.packages("tibble", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
 library(tibble)
@@ -34,7 +34,7 @@ et<- as.POSIXct(0, origin=ISOdatetime(2016,06,01,0,0,0))
 ```{r echo=F, results='hide'}
 clearStore <- function ()
 {
-unlink("c:/Users/ihar.halankou/Store/ttlive.fxopen.com", recursive=TRUE)
+unlink(file.path(getwd(), "rfdk"), recursive=TRUE)
 }
 ```
 
@@ -58,7 +58,7 @@ ttDisconnect()
 ```{r echo=F, results='hide'}
 clearStore()
 
-ttConnect()
+ttConnect(fdkPath = file.path(getwd(), "rfdk"))
 
 start.time2 <- Sys.time()
 
@@ -75,7 +75,7 @@ ttDisconnect()
 ```
 
 ``` {r echo=F, results='hide'}
-ttConnect()
+ttConnect(fdkPath = file.path(getwd(), "rfdk"))
 
 ttFeed.TickBestHistory(symbol, st, et)
 
@@ -97,7 +97,7 @@ ttDisconnect()
 
 ```{r echo=F, results='hide'}
 
-ttConnect()
+ttConnect(fdkPath = file.path(getwd(), "rfdk"))
 ttFeed.BarHistory(symbol, "BidAsk", period, st, et)
 
 start.time4 <- Sys.time()
@@ -131,7 +131,7 @@ datatable(speedtable, options = list(dom = 't'))
 <b>Time downloading bars from SSD Disk with different periodicity from `r st ` to `r et ` </b>
 
 ```{r echo=F}
-ttConnect()
+ttConnect(fdkPath = file.path(getwd(), "rfdk"))
 
 result <- data.frame(periodicity = character(), time = character())
 resultSpeed <- data.frame(periodicity = character(), speedBars = character())
