@@ -8,7 +8,7 @@ output: html_document
 
 ```{r setup, cache = F, echo = F, message = F, warning = F, tidy = F, results='hide'} 
 require(rFdk)
-ttConnect()
+ttConnect(fdkPath = file.path(getwd(), "rfdk"))
 if(!require("tibble")){
 install.packages("tibble", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
 library(tibble)
@@ -40,7 +40,7 @@ ttDisconnect()
 #symbol <- "EURUSD"  
 server <- "tp.st.soft-fx.eu"
 
-ttConnect(server,"1","123qwe!")
+ttConnect(server,"1","123qwe!",fdkPath = file.path(getwd(), "rfdk")) 
 
 result <- data.frame(symbol = character(), periodicity = character(), countAsk = character(), volumeAsk = character(),  countBid = character(), volumeBid = character())
 
