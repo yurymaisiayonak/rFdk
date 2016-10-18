@@ -22,7 +22,7 @@ options(warn=-1)
 require(rClr)
 require(rFdk)
 
-ttConnect("", "", "")
+ ttConnect(fdkPath = file.path(getwd(), "rfdk"))
 if(!require("DT")){ 
  install.packages("DT", repos = "http://cran.us.r-project.org", dependencies = TRUE)  
  library(DT) 
