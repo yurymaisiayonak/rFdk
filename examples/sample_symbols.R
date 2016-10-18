@@ -1,5 +1,5 @@
 # Connect to server before running the sample
-# ttConnect()
+# ttConnect(fdkPath = file.path(getwd(), "rfdk"))
 symbolData =  ttConf.Symbol()
 View(symbolData)
 
