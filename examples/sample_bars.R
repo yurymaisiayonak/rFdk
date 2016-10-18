@@ -1,7 +1,7 @@
 
 # Connect to server before running the sample
 # ttConnect()
-ttConnect()
+ttConnect(fdkPath = file.path(getwd(), "rfdk"))
 bars = ttFeed.BarHistory("EURUSD", "Bid", "H1")
 
 boxplot(bars$highs)
