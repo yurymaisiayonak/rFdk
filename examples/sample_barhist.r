@@ -1,5 +1,5 @@
 library(rFdk)
-ttConnect("crypto.ttlive.soft-fx.com", "100000053", "e2pllch2")
+ttConnect("crypto.ttlive.soft-fx.com", "100000053", "e2pllch2",fdkPath = file.path(getwd(), "rfdk"))
 startTime <- as.POSIXct(0, origin=ISOdatetime(2015,11,14,8,00,16), tz="GMT")
 endTime <- as.POSIXct(0, origin=ISOdatetime(2016,02,14,18,00,16), tz="GMT")
 st1 <- as.POSIXct(startTime)
@@ -14,7 +14,7 @@ View(ttFeed.BarHistory(symbol = "EURUSD", barPeriodStr = "S1", priceTypeStr ="Bi
 View(ttFeed.BarHistory(symbol = "EURUSD", barPeriodStr = "S1", priceTypeStr ="Bid", startTime = now-5, endTime = now))
 
 
-ttConnect("tp.st.soft-fx.eu", "100163","123qwe!")
+ttConnect("tp.st.soft-fx.eu", "100163","123qwe!",fdkPath = file.path(getwd(), "rfdk"))
 ttConnect()
 startTime <- as.POSIXct(0, origin=ISOdatetime(2015,10,14,8,00,16))
 endTime <- as.POSIXct(0, origin=ISOdatetime(2015,10,14,18,00,16))
