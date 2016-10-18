@@ -25,7 +25,7 @@ ttInit <- function() {
 #' @export
 ttConnect <- function(address = "", login= "", password= "", fdkPath = "", protocol = "fix") {
   ttInit()
-  rClr::clrCallStatic('RHost.FdkStatic', 'ConnectToFdk', address, login, password, fdkPath, protocol)
+  rClr::clrCallStatic('RHost.FdkStatic', 'ConnectToFdk', address, login, password, normalizePath(fdkPath, mustWork = FALSE), protocol)
 }
 
 #' Disconnect from a TT server
