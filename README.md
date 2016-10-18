@@ -36,7 +36,7 @@ You have sample code inside examples/sample_bars.r with various snippets of code
 A simple code sample code is the following:
 ```
 
-ttConnect()
+ttConnect(fdkPath = file.path(getwd(), "rfdk"))
 
 #Get configuration information of your account
 head(ttConf.Symbol())
