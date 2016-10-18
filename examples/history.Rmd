@@ -23,8 +23,7 @@ options(warn=-1)
 require(rClr)
 require(rFdk)
 
-ttConnect("", "", "")
-
+ttConnect(fdkPath = file.path(getwd(), "rfdk"))
 ```
 
 #2. Feed history  (bars and quotes)
@@ -53,7 +52,7 @@ now <-as.POSIXct(Sys.time(), tz="GMT")
 # 1000 seconds from present
 prevNow <-as.POSIXct(now-(1000), tz="GMT")
 
-ttFeed.TickLevel2History('EURUSD', prevNow, now, depth=1)
+ttFeed.TickLevel2History("EURUSD", prevNow, now, depth=1)
 ```
 Example of final report:
 http://rpubs.com/ihalankou/TradeHistory
