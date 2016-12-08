@@ -18,8 +18,8 @@ installRPackage <- function(url){
 	file.remove(package)
 }
 
-installRPackage("https://github.com/SoftFx/rFdk-/raw/master/Lib/RClr/rClr_0.7-4.zip");
-installRPackage("https://github.com/SoftFx/rFdk-/releases/download/v1.0.0/rFdk.zip");
+installRPackage("https://github.com/SoftFx/rFdk/raw/master/Lib/RClr/rClr_0.7-4.zip");
+installRPackage("https://github.com/SoftFx/rFdk/releases/download/v1.0.0/rFdk.zip");
 ```
 
 # How to update it?
