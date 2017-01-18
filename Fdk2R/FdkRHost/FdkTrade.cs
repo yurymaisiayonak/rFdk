@@ -65,12 +65,12 @@ namespace RHost
             return Trade.Server.GetAccountInfo();
         }
 
-        public static TradeRecord SendOrder(string symbol, string tradeCommandStr, string sideStr, double price, double volume, double stopLoss, double takeProfit, DateTime expiration, string comment)
+        public static TradeRecord SendOrder(string symbol, string tradeCommandStr, string sideStr, double price, double volume, double? stopPrice, double? hiddenVolume, double stopLoss, double takeProfit, DateTime expiration, string comment, string tag, int? magic)
         {
             var tradeCommand = FdkHelper.GetFieldByName<TradeCommand>(tradeCommandStr);
             var tradeSide = FdkHelper.GetFieldByName<TradeRecordSide>(sideStr);
 
-            return Trade.Server.SendOrder(symbol, tradeCommand, tradeSide, price, volume, stopLoss,takeProfit, expiration, comment);
+            return Trade.Server.SendOrder(symbol, tradeCommand, tradeSide, price, volume, stopPrice, hiddenVolume, stopLoss,takeProfit, expiration, comment, tag, magic);
         }
 
         public static double[] GetTradeAgentCommission(string varName)

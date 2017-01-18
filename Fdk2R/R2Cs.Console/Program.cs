@@ -25,9 +25,9 @@ namespace R2Cs
                             FdkStatic.ConnectToFdk("", "", "", "");
                             break;
                         case "2":
-                            //var history = FdkBars.ComputeBarsRangeTime("EURUSD", "Bid", "M1", DateTime.Now.AddDays(-5), DateTime.Now, 0);
-                            var history = FdkLevel2.GetQuotePacked("EURUSD", new DateTime(2016, 02, 18), new DateTime(2016, 02, 20), 1);
-                            Console.WriteLine(history);
+                            var barsRange = FdkBars.ComputeBarsRangeTime("EURUSD", "Bid", "M1", DateTime.Now.AddDays(-5), DateTime.Now, 0);
+                            var quotePacked = FdkLevel2.GetQuotePacked("EURUSD", new DateTime(2016, 02, 18), new DateTime(2016, 02, 20), 1);
+                            Console.WriteLine(barsRange + " " + quotePacked);
                             break;
                         case "3": FdkStatic.Disconnect();
                             break;
