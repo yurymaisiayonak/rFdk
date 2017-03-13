@@ -1,8 +1,9 @@
 #' Gets the account trades
-#' 
+#' @param startTime Starting time. 
+#' @param endTime Ending time. 
 #' @export
-ttTrade.History <- function(){
-  symInfo = GetTradeTransactionReportAll()
+ttTrade.History <- function(startTime, endTime){
+  symInfo = GetTradeReportTransactionReport(startTime, endTime)
   GetTradeReportDataFrame(symInfo)
 }
 
