@@ -17,55 +17,73 @@ library(tibble)
 if(!require("plotly")){
 install.packages("plotly", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
 library(plotly)
+
 }
+
+
 if(!require("DT")){
+
 install.packages("DT", repos = "http://cran.us.r-project.org", dependencies = TRUE) 
+
 library(DT)
+
 }
 
 utits = "secs"
 tz = "UTC"
 server <- "tp.st.soft-fx.eu"
-login <- "1"
+#server <- "tp.st.soft-fx.eu"
+login <- "100764"
 password <- "123qwe!"
-symbol <- "EURUSD"
 
 require(rFdk)
+
 ttConnect(server, login , password, fdkPath = file.path(getwd(), "rfdk"))
 
+st <- as.POSIXct(0, origin=ISOdatetime(2012,03,03,3,00,00))    
+et = as.POSIXct(0, origin=ISOdatetime(2018,03,04,3,00,00))   
 
 ```
 
 Server: `r  server ` <br>
+
 Login:  `r  login ` <br>
+
+Pequested period: from `r st ` to `r et ` <br>
 <br>
 
-```{r results= 'markup'}
+```{r echo=F, results='hide'}
 
+tt = 0
 start.time <- Sys.time()
 
-history <- ttTrade.History()
+
+history <- ttTrade.History(st, et)
 
 end.time <- Sys.time()
 
 time_taken <- difftime(end.time, start.time, tz, utits)
+
 tt <- round(as.numeric(time_taken), 2)
 
-
 countRecords =  nrow(history)
+
 speed = signif(round(countRecords/tt,0),3)
 
+table <-data.frame()
 table<- data.table(names=c("records"), "Count"=c(countRecords), "Loading time , sec"= c(tt), "Speed getting records, per sec"= c(speed))
+```
 
-
+```{r echo=F}
+if (countRecords>0) {
 datatable(table, options = list(dom = 't'))
+} else print ("Trere are no any orders!")
 
 ```
-<br>
-<br>
 
 ### Diagnostic
 
-`r history`
 
-
+```{r echo=F}
+datatable(history)
+```
